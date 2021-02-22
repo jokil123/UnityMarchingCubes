@@ -7,9 +7,16 @@ public class MarchingCube
     private int cubeType;
     private float isoLevel = 0.5f;
 
-    public Vector3[] intersectionPoints;
+    private Vector3[] intersectionPoints;
+    
+    public Vector3[] IntersectionPoints
+    {
+        get { return intersectionPoints; }
+    }
 
     private List<int[]> triangles;
+
+
 
     private Vector3 cubePosition;
     private Quaternion cubeRotation;
@@ -29,12 +36,8 @@ public class MarchingCube
     }
 
 
-    public Mesh GetMesh()
+    public List<int> GetTris()
     {
-        Mesh outputMesh = new Mesh();
-
-        outputMesh.vertices = intersectionPoints;
-
         List<int> tris = new List<int>();
 
         foreach (var item in triangles)
@@ -42,7 +45,29 @@ public class MarchingCube
             tris.AddRange(item);
         }
 
-        Debug.Log(tris.Count);
+        tris.Reverse();
+
+        return tris;
+    }
+
+
+    public Mesh GetMesh()
+    {
+        Mesh outputMesh = new Mesh();
+
+        outputMesh.vertices = intersectionPoints;
+
+        for (int i = 0; i < intersectionPoints.Length; i++)
+        {
+            Debug.Log("index " + i + " = " + intersectionPoints[i]);
+        }
+
+        List<int> tris = new List<int>();
+
+        foreach (var item in triangles)
+        {
+            tris.AddRange(item);
+        }
 
         tris.Reverse();
 
@@ -80,8 +105,6 @@ public class MarchingCube
 
         bool[] intersectionEdges = Lookup.BoolArray(Lookup.edgeTable[cubeType]);
 
-        //bool debugFlag = true;
-
         for (int i = 0; i < 12; i++)
         {
             Vector3 intersectionPoint;
@@ -99,7 +122,7 @@ public class MarchingCube
 
                 intersectionPoint = point1Pos + (isoLevel - point1Weight) * (point2Pos - point1Pos) / (point2Weight - point1Weight);
 
-                //intersectionPoint += cubePosition;
+                intersectionPoint += cubePosition;
                 intersectionPoint = cubeRotation * intersectionPoint;
             }
             else
@@ -109,25 +132,6 @@ public class MarchingCube
             
 
             output[i] = intersectionPoint;
-
-            /*
-            if (debugFlag)
-            {
-                debugFlag = false;
-
-                Debug.Log("point1Index: " + point1Index);
-                Debug.Log("point2Index: " + point2Index);
-
-                Debug.Log("point1Pos: " + point1Pos);
-                Debug.Log("point2Pos: " + point2Pos);
-
-                Debug.Log("point1Weight: " + point1Weight);
-                Debug.Log("point2Weight: " + point2Weight);
-
-                Debug.Log("intersectionPoint: " + intersectionPoint);
-                Debug.Log("isoLevel: " + isoLevel);
-            }
-            */
         }
 
         return output;
