@@ -34,7 +34,17 @@ public class FieldCreator : MonoBehaviour
             {
                 for (int iZ = 0; iZ < fieldSize.z; iZ++)
                 {
-                    field[iX, iY, iZ] = Mathf.PerlinNoise((float)iX / fieldSize.x, (float)iZ / fieldSize.z) * Mathf.PerlinNoise((float)iY / fieldSize.y, (float)iY / fieldSize.y);
+                    //field[iX, iY, iZ] = Random.Range(0f, 1f);
+
+                    if (iY < 2)
+                    {
+                        field[iX, iY, iZ] = 1;
+                    }
+                    else
+                    {
+                        field[iX, iY, iZ] = 0;
+                    }
+                    //field[iX, iY, iZ] = Mathf.PerlinNoise((float)iX / fieldSize.x, (float)iZ / fieldSize.z) * Mathf.PerlinNoise((float)iY / fieldSize.y, (float)iY / fieldSize.y);
                 }
             }
         }

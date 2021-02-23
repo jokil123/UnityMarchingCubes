@@ -69,7 +69,7 @@ public class MarchingCube
             tris.AddRange(item);
         }
 
-        tris.Reverse();
+        // tris.Reverse();
 
         outputMesh.triangles = tris.ToArray();
 

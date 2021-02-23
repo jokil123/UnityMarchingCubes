@@ -19,6 +19,10 @@ public class MarchingCubesAlgorithm : MonoBehaviour
     public List<MarchingCube> marchingCubes = new List<MarchingCube>();
 
 
+    FieldCreator fieldCreator;
+
+    float[,,] field;
+
 
     private void CreateCubes(float[,,] field)
     {
@@ -56,15 +60,47 @@ public class MarchingCubesAlgorithm : MonoBehaviour
     }
 
 
+    private void Start()
+    {
+        fieldCreator = gameObject.GetComponent<FieldCreator>();
+
+        field = fieldCreator.GeneratePerlinField();
+    }
+
+
+    private void OnValidate()
+    {
+        fieldCreator = gameObject.GetComponent<FieldCreator>();
+
+        field = fieldCreator.GeneratePerlinField();
+    }
 
 
     private void OnDrawGizmos()
     {
-        FieldCreator fieldCreator = gameObject.GetComponent<FieldCreator>();
+        fieldCreator = gameObject.GetComponent<FieldCreator>();
 
-        float[,,] field = fieldCreator.GeneratePerlinField();
+        //field = fieldCreator.GeneratePerlinField();
 
         //fieldCreator.DrawFieldGizmo(field);
+
+
+        Brush brush = gameObject.GetComponent<Brush>();
+
+        fieldCreator.DrawFieldGizmo(brush.CalculateBrushweight(new Vector3Int(field.GetLength(0), field.GetLength(1), field.GetLength(2))));
+
+        if (Input.GetMouseButton(0))
+        {
+            Debug.Log("Adding Terrain");
+            field = brush.AddToFieldWeight(field, 1);
+        }
+
+        if (Input.GetMouseButton(1))
+        {
+            Debug.Log("Removeing Terrain");
+            field = brush.AddToFieldWeight(field, -1);
+        }
+
 
         CreateCubes(field);
 
@@ -111,8 +147,17 @@ public class MarchingCubesAlgorithm : MonoBehaviour
 
         Mesh combinedMesh = new Mesh();
 
-        combinedMesh.vertices = verts.ToArray();
+        combinedMesh.SetVertices(verts);
         combinedMesh.triangles = tris.ToArray();
+
+        List<Vector3> normalVectors = new List<Vector3>();
+
+        for (int i = 0; i < verts.Count; i++)
+        {
+            normalVectors.Add(Vector3.one);
+        }
+
+        combinedMesh.normals = normalVectors.ToArray();
 
         return combinedMesh;
     }
