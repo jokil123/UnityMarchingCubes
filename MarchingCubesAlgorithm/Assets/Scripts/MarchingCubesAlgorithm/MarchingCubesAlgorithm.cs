@@ -49,7 +49,13 @@ public class MarchingCubesAlgorithm : MonoBehaviour
         }
     }
 
-    
+
+    private void Update()
+    {
+        gameObject.GetComponent<MeshCollider>().sharedMesh = gameObject.GetComponent<MeshFilter>().mesh;
+    }
+
+
 
 
     private void OnDrawGizmos()
