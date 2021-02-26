@@ -36,15 +36,11 @@ public class MarchingCubesAlgorithm : MonoBehaviour
                 {
                     float[] weight = new float[8];
 
-                    weight[0] = field[iX, iY, iZ];
-                    weight[1] = field[iX, iY, iZ + 1];
-                    weight[2] = field[iX + 1, iY, iZ + 1];
-                    weight[3] = field[iX + 1, iY, iZ];
-
-                    weight[4] = field[iX, iY + 1, iZ];
-                    weight[5] = field[iX, iY + 1, iZ + 1];
-                    weight[6] = field[iX + 1, iY + 1, iZ + 1];
-                    weight[7] = field[iX + 1, iY + 1, iZ];
+                    for (int cornerIndex = 0; cornerIndex < weight.Length; cornerIndex++)
+                    {
+                        Vector3Int indexPos = new Vector3Int(iX, iY, iZ) + Vector3Int.RoundToInt(Lookup.ConerPivotConerPositions()[cornerIndex]);
+                        weight[cornerIndex] = field[indexPos.x, indexPos.y, indexPos.z];
+                    }
 
 
                     marchingCubes.Add(new MarchingCube(weight, isoLevel, gameObject.transform.position + new Vector3(iX, iY, iZ) + Vector3.one * 0.5f, gameObject.transform.rotation, gameObject.transform.localScale));
@@ -78,6 +74,8 @@ public class MarchingCubesAlgorithm : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        Timer timer = new Timer("OnDrawGizmos");
+
         fieldCreator = gameObject.GetComponent<FieldCreator>();
 
         //field = fieldCreator.GeneratePerlinField();
@@ -114,15 +112,10 @@ public class MarchingCubesAlgorithm : MonoBehaviour
                 //Gizmos.DrawCube(item, Vector3.one * 0.1f);
             }
         }
+
+        timer.End();
     }
 
-    private void MakeCube()
-    {
-        marchingCubes = new List<MarchingCube>();
-
-        marchingCubes.Add(new MarchingCube(weight[0], isoLevel, gameObject.transform.position, gameObject.transform.rotation, gameObject.transform.localScale));
-        marchingCubes.Add(new MarchingCube(weight[1], isoLevel, gameObject.transform.position + Vector3.right, gameObject.transform.rotation, gameObject.transform.localScale));
-    }
 
     private Mesh GenerateCombinedMesh()
     {
@@ -161,4 +154,14 @@ public class MarchingCubesAlgorithm : MonoBehaviour
 
         return combinedMesh;
     }
+
+    /*
+    Mesh OptimizeMesh(Mesh unoptimizedMesh)
+    {
+        Vector3[] unoptimizedVertecies = unoptimizedMesh.vertices;
+        int[] unoptimizedTriangles = unoptimizedMesh.triangles;
+    }
+    */
+
+
 }

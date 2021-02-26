@@ -37,6 +37,18 @@ public static class Lookup
         return output;
     }
 
+    public static Vector3[] ConerPivotConerPositions()
+    {
+        Vector3[] output = new Vector3[conerPositions.Length];
+
+        for (int i = 0; i < conerPositions.Length; i++)
+        {
+            output[i] = conerPositions[i] / 2 + Vector3.one * 0.5f;
+        }
+
+        return output;
+    }
+
     public static Vector3[] conerPositions = {
         new Vector3(-1, -1, -1),
         new Vector3(-1, -1,  1),
