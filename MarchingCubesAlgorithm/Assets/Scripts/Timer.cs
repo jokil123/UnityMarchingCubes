@@ -47,6 +47,4 @@ public static class TimerDisplay
     {
 
     }
-
-    private static void 
 }
